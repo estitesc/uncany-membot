@@ -6,10 +6,11 @@ const SimpleSideBar: React.FC = () => {
     <div
       style={{
         height: "100%",
-        maxWidth: 500,
+        maxWidth: 400,
         display: "flex",
         flexDirection: "column",
         backgroundColor: "#E7DFDA",
+        overflow: "scroll",
       }}
     >
       <div

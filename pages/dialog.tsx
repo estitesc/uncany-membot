@@ -96,6 +96,7 @@ const Dialog: NextPage = () => {
           position: "relative",
           display: "flex",
           flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         <MarkBarSimple />

@@ -155,3 +155,18 @@ export const setFeedbackForThread = async (
     console.error("Error updating document: ", e);
   }
 };
+
+export const listenThreadData = (
+  userId: string,
+  threadId: string,
+  callback: (threads: any) => void
+) => {
+  const threadRef = getThreadRef(userId, threadId);
+  const userRef = doc(database, "users", userId);
+
+  const unsub = onSnapshot(threadRef, (doc) => {
+    callback(doc.data());
+  });
+
+  return unsub;
+};
