@@ -100,7 +100,7 @@ Building out the 3 lines surrounding the matching line is handled in `lib/memory
 
 The purpose of this buffer is to keep relevant dialog matches in context even over the course of several lines of dialog beyond when the match was triggered. All of these examples end up being loaded into the final responder like this:
 
-`
+```
 The AI has a conversation with the HUMAN. If the AI doesn't know the answer to a question, it can respond by saying it does not know.
 
   Here are PREVIOUS CONVERSATIONS that the HUMAN had with the AI:
@@ -111,7 +111,7 @@ The AI has a conversation with the HUMAN. If the AI doesn't know the answer to a
 
   ${dialog}
   AI: 
-`
+```
 
 I have experimented with more complex prompting such as "The AI can reference events from the PREVIOUS CONVERSATIONS" however, it does a pretty good job of this without extra prompting and adding more color to the prefix can end up rubbing off too strongly onto the final response.
 
