@@ -68,5 +68,57 @@ Any one of these lines would be much more likely to trigger a similarity search 
 
 Doing so you skip the summarization step, which may result in larger context buffers that take up more tokens in your final responder prompt, but gives the LLM what it needs to intelligently handle scenarios that remind it of previous conversations. 
 
+# Searching Embeddings
+
+Now that we've learned how to store embeddings, and the rational for storing them at a dialog line level, let's go into the mechanics of finding matches when we are trying to generate the next response. 
+
+The first thing you need to do is call the embeddings API for the most recent line of dialog. We are doing that anyway to store the embedding for future look ups, but this just means that we need to do it syncronously (before a reply is generated) and can't do it after the fact in an async process.
+
+So it's pretty simple, get the embedding, then compare it across ALL previous dialog line embeddings. Comparing a pair of embeddings uses this simplified cosine distance function:
+
+```
+export const cosineSimilarity = (a: number[], b: number[]) => {
+  let dotProduct = 0;
+  for (let i = 0; i < a.length; i++) {
+    dotProduct += a[i] * b[i];
+  }
+  return dotProduct;
+};
+```
+
+Feel free to take a look at the Open AI docs which explain that in the case of ADA embeddings, dot product is a sufficient stand in for full cosine similarity.
+
+I then look at the highest values, and consider them matches if they surpass a certain threshold. I'm using 0.8 as a threshold here for the cosine distance. 
+
+I'm picking the top 3 matches given they surpass the threshold, which is a constant you could play with depending on how you want to calibrate for your use case.
+
+# Building the Relevance Buffer
+
+After finding the matching dialog lines, we use look at the 3 lines of dialog before and after and load the resulting block of dialog as a string into a relevance buffer, which will contain up to 10 entries. New entries push older ones from the bottom, FIFO, not based on relative similarity scores.
+
+Building out the 3 lines surrounding the matching line is handled in `lib/memory.ts`.
+
+The purpose of this buffer is to keep relevant dialog matches in context even over the course of several lines of dialog beyond when the match was triggered. All of these examples end up being loaded into the final responder like this:
+
+`
+The AI has a conversation with the HUMAN. If the AI doesn't know the answer to a question, it can respond by saying it does not know.
+
+  Here are PREVIOUS CONVERSATIONS that the HUMAN had with the AI:
+
+  ${renderDialogBlocks}
+
+  Here is the current conversation:
+
+  ${dialog}
+  AI: 
+`
+
+I have experimented with more complex prompting such as "The AI can reference events from the PREVIOUS CONVERSATIONS" however, it does a pretty good job of this without extra prompting and adding more color to the prefix can end up rubbing off too strongly onto the final response.
+
+# Beyond Simple Memory
+
+I've shown how you can use embeddings to search for relevant conversation history and give the bot context to remember what a user said to it in the past. It works pretty well especially in the cases of any direct questions that you ask where the answer would be somewhere in the history. 
+
+You could do more interesting things with this. For example, you could build a bot that remembers it's conversations with other users. That dramatically increases the number of embeddings that you would need to run a similarity search on, and hence you might need to consider some trees, sampling, or other search structures to traverse in a more efficient way.
 
 
