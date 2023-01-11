@@ -1,47 +1,32 @@
 import React from "react";
 import type { NextPage } from "next";
-import Head from "next/head";
-import BubbleWordMark from "../c/BubbleWordMark";
-import "react-phone-number-input/style.css";
+import HeadWithFonts from "../c/HeadWithFonts";
+import MarkBar from "../c/landing/MarkBar";
+import Tagline from "../c/landing/sections/Tagline";
+import HowItWorks from "../c/landing/sections/HowItWorks";
+import SoWhat from "../c/landing/sections/SoWhat";
+import Examples from "../c/landing/sections/Examples";
 
-const Start: NextPage = () => {
+const Home: NextPage = () => {
   return (
     <div>
-      <Head>
-        <title>tht.ooo</title>
-        <meta name="description" content="it really is something" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@500&family=Roboto+Condensed:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
+      <HeadWithFonts />
 
       <div
         style={{
-          height: "100vh",
-          backgroundColor: "#fbfbf8",
-          position: "relative",
+          width: "100%",
+          backgroundColor: "#FAFAFA",
+          color: "#1D160C",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 32,
-            left: 0,
-            height: "100%",
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <BubbleWordMark />
-        </div>
+        <MarkBar />
+        <Tagline />
+        <HowItWorks />
+        <SoWhat />
+        <Examples />
       </div>
     </div>
   );
 };
 
-export default Start;
+export default Home;

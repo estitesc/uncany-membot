@@ -4,8 +4,8 @@ import * as React from "react";
 const HeadWithFonts: React.FC = () => {
   return (
     <Head>
-      <title>hf0 formbot</title>
-      <meta name="description" content="it really is something" />
+      <title>uncany.ai</title>
+      <meta name="description" content="build better bots" />
       <link rel="icon" href="/favicon.ico" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" />
