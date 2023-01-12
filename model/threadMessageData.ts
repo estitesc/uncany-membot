@@ -28,8 +28,7 @@ export const getIncMessageIdAndIncrement = async (threadRef: any) => {
 export const createMessageAndEmbed = async (
   userId: string,
   threadId: string,
-  body: string,
-  subthreadId: string
+  body: string
 ) => {
   const userRef = doc(database, "users", userId);
   const threadCollRef = collection(userRef, "threads");
@@ -39,12 +38,10 @@ export const createMessageAndEmbed = async (
 
   const messageRef = doc(threadRef, "messages", newMessageId);
 
-  console.log("subthread ID here", subthreadId);
   try {
     await setDoc(messageRef, {
       body,
       createdAt: new Date(),
-      subthreadId,
     });
     console.log("Document written with ID: ", newMessageId);
 

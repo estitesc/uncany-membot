@@ -6,24 +6,15 @@ export const handleStoreReply = async (
   uid: string,
   threadRef: any,
   body: string,
-  threadData: any,
-  subthreadId?: string
+  threadData: any
 ) => {
   console.log("entering handle store reply", body);
-  const interviewOrChallengeSubthreadId =
-    threadData?.interviewOrChallenge == "CHALLENGE" ? "CHALLENGE" : "INTERVIEW";
-  const subthreadIdToUse = subthreadId
-    ? subthreadId
-    : interviewOrChallengeSubthreadId;
-
-  console.log("subthreadIdToUse is", subthreadIdToUse);
 
   const result = await createThreadReplyAndEmbed(
     uid,
     threadRef,
     threadData.id,
-    body,
-    subthreadIdToUse
+    body
   );
 
   const userData: any = await getUserData(uid);

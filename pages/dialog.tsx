@@ -14,8 +14,6 @@ import DialogPanel from "../c/DialogPanel";
 import useIsDesktop from "../h/useIsDesktop";
 import PleaseDesktop from "../c/PleaseDesktop";
 import { apiPath } from "../lib/embedApiCaller";
-import { getThreadData } from "../model/threadData";
-import { getSubthreadId } from "../util/subthreadHelper";
 
 const Dialog: NextPage = () => {
   const { userId, setUserId } = React.useContext(SessionUserContext);
@@ -66,9 +64,7 @@ const Dialog: NextPage = () => {
     if (!message.length) {
       return;
     }
-    const threadData: any = await getThreadData(userId, threadId);
-    const subthreadId = getSubthreadId(threadData, message);
-    await createMessageAndEmbed(userId, threadId, message, subthreadId);
+    await createMessageAndEmbed(userId, threadId, message);
 
     const response = await fetch(`${apiPath}/readAndReplyThread`, {
       method: "POST",

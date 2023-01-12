@@ -19,19 +19,14 @@ export const combineMessageAndReply = (messages: any, replies: any) => {
 
 export const combineMessageAndReplyAndFilter = (
   messages: any,
-  replies: any,
-  subthreadId: string
+  replies: any
 ) => {
   let merged: any[] = [];
   Object.values(messages).forEach((messageData: any) => {
-    if (messageData.subthreadId == subthreadId) {
-      merged.push({ ...messageData, source: "user" });
-    }
+    merged.push({ ...messageData, source: "user" });
   });
   Object.values(replies).forEach((replyData: any) => {
-    if (replyData.subthreadId == subthreadId) {
-      merged.push({ ...replyData, source: "bot" });
-    }
+    merged.push({ ...replyData, source: "bot" });
   });
 
   if (merged.length == 0) {
@@ -95,11 +90,7 @@ export const combineNLinesToDialog = (
   config: any,
   threadData: any
 ) => {
-  const combined = combineMessageAndReplyAndFilter(
-    messages,
-    replies,
-    threadData.interviewOrChallenge || "INTERVIEW"
-  );
+  const combined = combineMessageAndReplyAndFilter(messages, replies);
   const amountToSlice = numLines < combined.length ? numLines : combined.length;
   return mapLinesToDialog(combined.slice(-amountToSlice), config);
 };

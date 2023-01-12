@@ -17,8 +17,7 @@ export const createThreadReplyAndEmbed = async (
   userId: string,
   threadRef: any,
   threadId: string,
-  body: string,
-  subthreadId: string
+  body: string
 ) => {
   console.log("in create");
   const newReplyId = await getIncMessageIdAndIncrement(threadRef);
@@ -28,7 +27,6 @@ export const createThreadReplyAndEmbed = async (
   try {
     setDoc(replyRef, {
       body,
-      subthreadId,
       createdAt: new Date(),
     });
 
