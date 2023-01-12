@@ -38,7 +38,7 @@ const runNode = async (
     },
     threadData
   );
-  // console.log("got prompt", prompt);
+  console.log("got prompt", prompt);
 
   console.log("getting completion");
   const completion = await getCompletionFromParams({

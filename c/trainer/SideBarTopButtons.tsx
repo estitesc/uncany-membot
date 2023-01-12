@@ -1,5 +1,5 @@
 import * as React from "react";
-import BuildContext from "../contexts/BuildContext";
+import BuildContext from "../../contexts/BuildContext";
 
 const SideBarTopButtons: React.FC = () => {
   const { sideBarMode, setSideBarMode } = React.useContext(BuildContext);

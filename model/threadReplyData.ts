@@ -11,6 +11,7 @@ import {
 import { callEmbedApi } from "../lib/embedApiCaller";
 import { database } from "../lib/firebase";
 import { unwindSnapshot } from "../util/modelHelper";
+import { getThreadData } from "./threadData";
 import { getIncMessageIdAndIncrement } from "./threadMessageData";
 
 export const createThreadReplyAndEmbed = async (
@@ -30,7 +31,20 @@ export const createThreadReplyAndEmbed = async (
       createdAt: new Date(),
     });
 
-    await callEmbedApi(userId, threadId, newReplyId, body, "ai");
+    const threadData: any = await getThreadData(userId, threadId);
+    const source = threadData.convoState === "SIM_HUMAN" ? "user" : "ai";
+    const programId = "sam_2";
+    const canonOrMemory =
+      threadData.convoState === "SIM_HUMAN" ? "canon" : "memory";
+    await callEmbedApi(
+      userId,
+      threadId,
+      newReplyId,
+      programId,
+      canonOrMemory,
+      body,
+      source
+    );
     console.log("Document written with ID: ", newReplyId);
 
     return newReplyId;

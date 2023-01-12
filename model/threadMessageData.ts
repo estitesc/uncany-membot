@@ -11,7 +11,11 @@ import {
 import { callEmbedApi } from "../lib/embedApiCaller";
 import { database } from "../lib/firebase";
 import { unwindSnapshot } from "../util/modelHelper";
-import { getThreadDataFromRef, setThreadDataFromRef } from "./threadData";
+import {
+  getThreadData,
+  getThreadDataFromRef,
+  setThreadDataFromRef,
+} from "./threadData";
 
 export const getIncMessageIdAndIncrement = async (threadRef: any) => {
   const threadData: any = await getThreadDataFromRef(threadRef);
@@ -46,7 +50,20 @@ export const createMessageAndEmbed = async (
     console.log("Document written with ID: ", newMessageId);
 
     // Then also get the embedding and update the message with it and write the global
-    await callEmbedApi(userId, threadId, newMessageId, body, "user");
+    const threadData: any = await getThreadData(userId, threadId);
+    const source = threadData.convoState === "SIM_HUMAN" ? "ai" : "user";
+    const programId = "sam_2";
+    const canonOrMemory =
+      threadData.convoState === "SIM_HUMAN" ? "canon" : "memory";
+    await callEmbedApi(
+      userId,
+      threadId,
+      newMessageId,
+      programId,
+      canonOrMemory,
+      body,
+      source
+    );
 
     return newMessageId;
   } catch (e) {

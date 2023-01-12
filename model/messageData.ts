@@ -9,7 +9,9 @@ export const createGlobalMessage = async (
   body: string,
   decoratedBody: string,
   embedding: number[],
-  senderType: string
+  senderType: string,
+  programId: string,
+  canonOrMemory: string
 ) => {
   const messagesRef = collection(database, "messages");
 
@@ -22,6 +24,8 @@ export const createGlobalMessage = async (
       decoratedBody,
       embedding,
       senderType,
+      programId,
+      canonOrMemory,
       createdAt: new Date(),
     });
     console.log("Document written with ID: ", docRef.id);

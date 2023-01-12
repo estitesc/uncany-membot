@@ -11,7 +11,7 @@ import { getThreadReplyData } from "../model/threadReplyData";
 import { decorateBody } from "../util/messageDecorator";
 
 const DIALOG_LINES = 6;
-const SIMILARITY_THRESHOLD = 0.8;
+const SIMILARITY_THRESHOLD = 0.65;
 const BUFFER_LENGTH = 8;
 const DIALOG_BUFFER_LENGTH = 10;
 
@@ -30,7 +30,13 @@ const getLastLine = (text: string) => {
   return lines[lines.length - 1];
 };
 
-const isDistant = (messageId: string, messageIdInc: number) => {
+const isDistant = (
+  messageId: string,
+  messageIdInc: number,
+  messageThreadId: string,
+  sourceThreadId: string
+) => {
+  if (messageThreadId !== sourceThreadId) return true;
   return messageIdInc - parseInt(messageId) > DIALOG_BUFFER_LENGTH;
 };
 
@@ -46,6 +52,7 @@ export const getRelevantDialogBlocks = async (
   console.log("is running dialog block embeddings", new Date());
 
   const lastLine = getLastLine(dialog);
+  console.log("LAST LINE IS", lastLine);
   const lastLineEmbedding = await fetchEmbedding(lastLine);
   // console.log("lastLineEmbedding are", lastLineEmbedding);
 
@@ -68,9 +75,16 @@ export const getRelevantDialogBlocks = async (
     if (
       message.embedding &&
       lastLineEmbedding != message.embedding &&
-      isDistant(message.threadMessageId, threadData.messageIdInc)
+      isDistant(
+        message.threadMessageId,
+        threadData.messageIdInc,
+        message.threadId,
+        threadData.id
+      ) &&
+      threadData.programId == message.programId
     ) {
       const similarity = cosineSimilarity(lastLineEmbedding, message.embedding);
+      console.log("similarity is", message.id, similarity);
       topTenMessages = updateTopNMessages(
         topTenMessages,
         { similarity, message },
@@ -97,6 +111,10 @@ export const getRelevantDialogBlocks = async (
         if (targetIndex < 1) targetIndex = 1;
 
         let dialogBlock = "";
+        const messageSenderName =
+          messageData.canonOrMemory === "canon" ? "AI" : "HUMAN";
+        const replySenderName =
+          messageData.canonOrMemory === "canon" ? "HUMAN" : "AI";
         for (let i = targetIndex; i < targetIndex + DIALOG_LINES; i++) {
           console.log("params", userId, messageData.threadId, i.toString());
           const messageMatch = await getThreadMessageData(
@@ -111,20 +129,11 @@ export const getRelevantDialogBlocks = async (
           );
           if (messageMatch) {
             // console.log("got message match", messageMatch);
-            const matchThreadData = await getThreadData(
-              messageData.userId,
-              messageData.threadId
-            );
-
-            const decoratedBody = decorateBody(
-              messageMatch.body,
-              matchThreadData
-            );
-            dialogBlock += `${decoratedBody}\n`;
+            dialogBlock += `${messageSenderName}: ` + messageMatch?.body + "\n";
           }
           if (replyMatch) {
             // console.log("got reply match", replyMatch);
-            dialogBlock += "AI: " + replyMatch?.body + "\n";
+            dialogBlock += `${replySenderName}: ` + replyMatch?.body + "\n";
           }
         }
         console.log("dialog block is", dialogBlock);

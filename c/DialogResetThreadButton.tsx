@@ -4,13 +4,13 @@ import SessionUserContext from "../contexts/SessionUserContext";
 import { createNamedThread } from "../model/threadData";
 import SmallButton from "./SmallButton";
 
-const ResetThreadButton: React.FC = () => {
+const DialogResetThreadButton: React.FC = () => {
   const { userId } = React.useContext(SessionUserContext);
   console.log("session user id is", userId);
   const { setThreadId, threadId } = React.useContext(BuildContext);
 
   const onClick = React.useCallback(async () => {
-    const newThreadId = await createNamedThread(userId, "build", "SIM_HUMAN");
+    const newThreadId = await createNamedThread(userId, "build", "RECALL");
     console.log("created thread", newThreadId);
     setThreadId(newThreadId || "DEFAULT");
   }, [setThreadId, userId]);
@@ -18,9 +18,9 @@ const ResetThreadButton: React.FC = () => {
   return (
     <SmallButton
       onClick={onClick}
-      label={threadId ? "reset thread" : "start thread"}
+      label={threadId ? "reset live thread" : "start live thread"}
     />
   );
 };
 
-export default ResetThreadButton;
+export default DialogResetThreadButton;
