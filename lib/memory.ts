@@ -111,6 +111,7 @@ export const getRelevantDialogBlocks = async (
         if (targetIndex < 1) targetIndex = 1;
 
         let dialogBlock = "";
+        console.log("message data for this message is", messageData);
         const messageSenderName =
           messageData.canonOrMemory === "canon" ? "AI" : "HUMAN";
         const replySenderName =

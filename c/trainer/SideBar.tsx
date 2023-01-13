@@ -1,5 +1,6 @@
 import * as React from "react";
 import BuildContext from "../../contexts/BuildContext";
+import SideBarBrowsePanel from "./SideBarBrowsePanel";
 import SideBarThreadPanel from "./SideBarThreadPanel";
 import SideBarTopButtons from "./SideBarTopButtons";
 
@@ -24,6 +25,14 @@ const SideBar: React.FC = () => {
         }}
       >
         <SideBarThreadPanel />
+      </div>
+      <div
+        style={{
+          display: sideBarMode === "BROWSE" ? "flex" : "none",
+          flexDirection: "column",
+        }}
+      >
+        <SideBarBrowsePanel />
       </div>
     </div>
   );

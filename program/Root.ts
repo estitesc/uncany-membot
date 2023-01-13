@@ -1,5 +1,5 @@
 import SimulateHuman from "./SimulateHuman";
-import TalkAboutMemories from "./TalkAboutMemories";
+import TalkFromExamples from "./TalkFromExamples";
 
 const Root: ProgramNode = (threadProps: ThreadProps) => {
   console.log("running Root");
@@ -8,7 +8,7 @@ const Root: ProgramNode = (threadProps: ThreadProps) => {
     if (threadProps.threadData.convoState === "SIM_HUMAN") {
       await SimulateHuman(threadProps)();
     } else {
-      await TalkAboutMemories(threadProps)();
+      await TalkFromExamples(threadProps)();
       return;
     }
   };
