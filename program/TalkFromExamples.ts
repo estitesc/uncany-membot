@@ -9,7 +9,7 @@ const TalkFromExamples: ProgramNode = (threadProps: ThreadProps) => {
     const dialogResponder: LanguageNode = {
       promptTemplate: talkFromExamples,
       gptConfig: {
-        temperature: 0.7,
+        temperature: 0.5,
         max_tokens: 100,
         stop: "HUMAN",
       },
