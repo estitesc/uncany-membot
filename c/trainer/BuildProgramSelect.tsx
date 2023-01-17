@@ -1,7 +1,7 @@
 import * as React from "react";
 import BuildContext from "../../contexts/BuildContext";
 import SessionUserContext from "../../contexts/SessionUserContext";
-import { getProgramsForUser } from "../../model/programData";
+import { listenProgramsForUser } from "../../model/programData";
 
 const BuildProgramSelect: React.FC = () => {
   const [programIds, setProgramIds] = React.useState([""]);
@@ -10,14 +10,18 @@ const BuildProgramSelect: React.FC = () => {
   const { selProgramId, setSelProgramId } = React.useContext(BuildContext);
 
   React.useEffect(() => {
+    let unsub;
+    setProgramIds([]);
     (async () => {
       if (userId) {
-        const programs = await getProgramsForUser(userId);
-        console.log("threads data is", userId, programs);
-
-        setProgramIds(Object.keys(programs));
+        unsub = listenProgramsForUser(userId, async (programs: any) => {
+          if (programs) {
+            setProgramIds(Object.keys(programs));
+          }
+        });
       }
     })();
+    return unsub;
   }, [userId]);
 
   const onSelect = React.useCallback(

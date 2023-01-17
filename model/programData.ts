@@ -47,6 +47,21 @@ export const getProgramsForUser = async (userId: string) => {
   return result;
 };
 
+export const listenProgramsForUser = (
+  userId: string,
+  callback: (nodes: any) => void
+) => {
+  const userRef = doc(database, "users", userId);
+  const q = query(collection(userRef, "programs"));
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const result = unwindSnapshot(querySnapshot);
+    callback(result);
+  });
+
+  return unsubscribe;
+};
+
 export const setProgramDataFromRef = async (programRef: any, data: any) => {
   try {
     await setDoc(programRef, data, { merge: true });

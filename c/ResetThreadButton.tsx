@@ -6,7 +6,6 @@ import SmallButton from "./SmallButton";
 
 const ResetThreadButton: React.FC = () => {
   const { userId } = React.useContext(SessionUserContext);
-  console.log("session user id is", userId);
   const { setThreadId, threadId } = React.useContext(BuildContext);
 
   const onClick = React.useCallback(async () => {
