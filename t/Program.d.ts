@@ -16,7 +16,6 @@ interface LanguageNode {
 
 interface ThreadProps {
   messages: any;
-  replies: any;
   uid: string;
   threadRef: any;
   threadData: any;

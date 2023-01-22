@@ -1,14 +1,8 @@
 import { cosineSimilarity } from "./math";
 import { fetchEmbedding } from "../lib/apiFetcher";
 import { getUserMessages } from "../model/messageData";
-import {
-  getThreadData,
-  getThreadRef,
-  setThreadDataFromRef,
-} from "../model/threadData";
+import { getThreadRef, setThreadDataFromRef } from "../model/threadData";
 import { getThreadMessageData } from "../model/threadMessageData";
-import { getThreadReplyData } from "../model/threadReplyData";
-import { decorateBody } from "../util/messageDecorator";
 
 const DIALOG_LINES = 6;
 const SIMILARITY_THRESHOLD = 0.65;
@@ -112,10 +106,6 @@ export const getRelevantDialogBlocks = async (
 
         let dialogBlock = "";
         console.log("message data for this message is", messageData);
-        const messageSenderName =
-          messageData.canonOrMemory === "canon" ? "AI" : "HUMAN";
-        const replySenderName =
-          messageData.canonOrMemory === "canon" ? "HUMAN" : "AI";
         for (let i = targetIndex; i < targetIndex + DIALOG_LINES; i++) {
           console.log("params", userId, messageData.threadId, i.toString());
           const messageMatch = await getThreadMessageData(
@@ -123,18 +113,10 @@ export const getRelevantDialogBlocks = async (
             messageData.threadId,
             i.toString()
           );
-          const replyMatch = await getThreadReplyData(
-            messageData.userId,
-            messageData.threadId,
-            i.toString()
-          );
           if (messageMatch) {
             // console.log("got message match", messageMatch);
-            dialogBlock += `${messageSenderName}: ` + messageMatch?.body + "\n";
-          }
-          if (replyMatch) {
-            // console.log("got reply match", replyMatch);
-            dialogBlock += `${replySenderName}: ` + replyMatch?.body + "\n";
+            dialogBlock +=
+              `${messageMatch.senderLabelPrompt}: ` + messageMatch?.body + "\n";
           }
         }
         console.log("dialog block is", dialogBlock);

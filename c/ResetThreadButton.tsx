@@ -9,7 +9,15 @@ const ResetThreadButton: React.FC = () => {
   const { setThreadId, threadId } = React.useContext(BuildContext);
 
   const onClick = React.useCallback(async () => {
-    const newThreadId = await createNamedThread(userId, "build", "SIM_HUMAN");
+    const newThreadId = await createNamedThread(
+      userId,
+      "build",
+      "SIM_HUMAN",
+      undefined,
+      "PUPPET",
+      "FAKE HUMAN",
+      true
+    );
     console.log("created thread", newThreadId);
     setThreadId(newThreadId || "DEFAULT");
   }, [setThreadId, userId]);

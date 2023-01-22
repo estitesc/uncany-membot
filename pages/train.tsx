@@ -2,11 +2,9 @@ import React from "react";
 import _ from "lodash";
 import type { NextPage } from "next";
 import {
-  createMessageAndEmbed,
+  createMessageFromTrainer,
   listenThreadMessages,
 } from "../model/threadMessageData";
-import { listenThreadReplies } from "../model/threadReplyData";
-import { combineMessageAndReply } from "../util/dialogHelper";
 import HeadWithFonts from "../c/HeadWithFonts";
 import MessageInput from "../c/MessageInput";
 import { createUser, userExists } from "../model/userData";
@@ -15,11 +13,10 @@ import FunctionBar from "../c/FunctionBar";
 import SideBar from "../c/trainer/SideBar";
 import BuildContext from "../contexts/BuildContext";
 import SessionUserContext from "../contexts/SessionUserContext";
-import BuildBub from "../c/BuildBub";
+import DialogPanel from "../c/DialogPanel";
 
 const Train: NextPage = () => {
   const [messages, setMessages] = React.useState([""]);
-  const [replies, setReplies] = React.useState([""]);
 
   const { userId, setUserId } = React.useContext(SessionUserContext);
   const { threadId, setSelMessages } = React.useContext(BuildContext);
@@ -75,7 +72,7 @@ const Train: NextPage = () => {
 
   React.useEffect(() => {
     scrollToBottom();
-  }, [messages, replies]);
+  }, [messages]);
 
   React.useEffect(() => {
     if (!threadId || !userId) {
@@ -88,22 +85,11 @@ const Train: NextPage = () => {
     return unsub;
   }, [threadId, userId]);
 
-  React.useEffect(() => {
-    if (!threadId || !userId) {
-      return;
-    }
-    const unsub = listenThreadReplies(userId, threadId, (replies: any) => {
-      setReplies(replies);
-    });
-    return unsub;
-  }, [threadId, userId]);
-
   const sendMessage = async (message: string) => {
     if (!message.length) {
       return;
     }
-    console.log("about to create message ", message, userId, threadId);
-    await createMessageAndEmbed(userId, threadId, message);
+    await createMessageFromTrainer(userId, threadId, message);
 
     const response = await fetch("/api/readAndReplyThread", {
       method: "POST",
@@ -113,11 +99,8 @@ const Train: NextPage = () => {
       body: JSON.stringify({ uid: userId, threadId }),
     });
     const data = await response.json();
+    return data;
   };
-
-  const mergedMessageAndReply = React.useMemo(() => {
-    return combineMessageAndReply(messages, replies);
-  }, [messages, replies]);
 
   return (
     <div>
@@ -151,37 +134,7 @@ const Train: NextPage = () => {
             }}
           >
             <FunctionBar />
-            <div
-              style={{
-                backgroundColor: "#2B1D12",
-                flex: 1,
-                maxHeight: `calc(100vh - 188px)`,
-                overflow: "scroll",
-                width: "100%",
-              }}
-            >
-              {mergedMessageAndReply.map((message: any, index: number) => {
-                return (
-                  <BuildBub
-                    message={message}
-                    // sender={
-                    //   message.source == "user"
-                    //     ? "userassbot"
-                    //     : `fakehuman.${threadId}`
-                    // }
-                    sender={message.source == "user" ? "HUMAN" : "AI"}
-                    senderColor={
-                      message.source == "user" ? "#78C1DD" : "#F69292"
-                    }
-                    content={message.body}
-                    isFromUser={message.source == "user"}
-                    index={index}
-                    key={index}
-                  />
-                );
-              })}
-              <div ref={scrollEndRef} />
-            </div>
+            <DialogPanel />
             <MessageInput sendMessage={sendMessage} />
           </div>
         </div>
