@@ -1,7 +1,10 @@
 import React from "react";
 import _ from "lodash";
 import type { NextPage } from "next";
-import { createMessageAndEmbed } from "../model/threadMessageData";
+import {
+  createMessageAndEmbed,
+  createMessageFromTrainer,
+} from "../model/threadMessageData";
 import HeadWithFonts from "../c/HeadWithFonts";
 import MessageInput from "../c/MessageInput";
 import { createUser, userExists } from "../model/userData";
@@ -48,7 +51,7 @@ const Dialog: NextPage = () => {
     const userDoesExist = await userExists(storedUserId);
 
     if (userDoesExist) {
-      console.log("found existing, setting id");
+      console.log("found existing, setting id", storedUserId);
       setUserId(storedUserId);
     } else {
       console.log("no corresponding db entry, creating new");
@@ -64,7 +67,8 @@ const Dialog: NextPage = () => {
     if (!message.length) {
       return;
     }
-    await createMessageAndEmbed(userId, threadId, message);
+    // await createMessageAndEmbed(userId, threadId, message);
+    await createMessageFromTrainer(userId, threadId, message);
 
     const response = await fetch(`${apiPath}/readAndReplyThread`, {
       method: "POST",

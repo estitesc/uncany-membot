@@ -32,6 +32,12 @@ export const getIncMessageIdAndIncrement = async (threadRef: any) => {
 export const createMessageAndEmbed = async (
   userId: string,
   threadId: string,
+  originator: string,
+  interfaceOrigin: string,
+  llmConfig: any,
+  senderLabelPrompt: string,
+  senderLabelDisplay: string,
+  isCanon: boolean,
   body: string
 ) => {
   const userRef = doc(database, "users", userId);
@@ -62,13 +68,61 @@ export const createMessageAndEmbed = async (
       programId,
       canonOrMemory,
       body,
-      source
+      interfaceOrigin
     );
 
     return newMessageId;
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+};
+
+export const createMessageFromTrainer = async (
+  userId: string,
+  threadId: string,
+  body: string
+) => {
+  const threadData: any = await getThreadData(userId, threadId);
+  const senderLabelPrompt =
+    threadData.convoState === "SIM_HUMAN" ? "AI" : "HUMAN";
+  const senderLabelDisplay = threadData.humanSenderName || "HUMAN";
+  const isCanon = threadData.isCanon || false;
+
+  await createMessageAndEmbed(
+    userId,
+    threadId,
+    "HUMAN",
+    "train",
+    {},
+    senderLabelPrompt,
+    senderLabelDisplay,
+    isCanon,
+    body
+  );
+};
+
+export const createReplyMessage = async (
+  userId: string,
+  threadId: string,
+  body: string
+) => {
+  const threadData: any = await getThreadData(userId, threadId);
+  const senderLabelPrompt =
+    threadData.convoState === "SIM_HUMAN" ? "HUMAN" : "AI";
+  const senderLabelDisplay = threadData.aiSenderName || "AI";
+  const isCanon = threadData.isCanon || false;
+
+  await createMessageAndEmbed(
+    userId,
+    threadId,
+    "AI",
+    "advanceDialog",
+    {},
+    senderLabelPrompt,
+    senderLabelDisplay,
+    isCanon,
+    body
+  );
 };
 
 export const setMessageDataFromThreadRef = async (

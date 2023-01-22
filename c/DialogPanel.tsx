@@ -2,13 +2,10 @@ import * as React from "react";
 import BuildContext from "../contexts/BuildContext";
 import SessionUserContext from "../contexts/SessionUserContext";
 import { listenThreadMessages } from "../model/threadMessageData";
-import { listenThreadReplies } from "../model/threadReplyData";
-import { combineMessageAndReply } from "../util/dialogHelper";
 import BuildBub from "./BuildBub";
 
 const DialogPanel: React.FC = () => {
-  const [messages, setMessages] = React.useState([""]);
-  const [replies, setReplies] = React.useState([""]);
+  const [messages, setMessages] = React.useState({});
   const { threadId } = React.useContext(BuildContext);
   const { userId } = React.useContext(SessionUserContext);
   const scrollEndRef = React.useRef(undefined as any);
@@ -23,20 +20,6 @@ const DialogPanel: React.FC = () => {
     return unsub;
   }, [threadId, userId]);
 
-  React.useEffect(() => {
-    if (!threadId || !userId) {
-      return;
-    }
-    const unsub = listenThreadReplies(userId, threadId, (replies: any) => {
-      setReplies(replies);
-    });
-    return unsub;
-  }, [threadId, userId]);
-
-  const mergedMessageAndReply = React.useMemo(() => {
-    return combineMessageAndReply(messages, replies);
-  }, [messages, replies]);
-
   const scrollToBottom = () => {
     if (scrollEndRef.current) {
       scrollEndRef.current.scrollIntoView(false);
@@ -45,7 +28,7 @@ const DialogPanel: React.FC = () => {
 
   React.useEffect(() => {
     scrollToBottom();
-  }, [mergedMessageAndReply]);
+  }, [messages]);
 
   return (
     <div
@@ -58,14 +41,16 @@ const DialogPanel: React.FC = () => {
       }}
     >
       {threadId ? (
-        mergedMessageAndReply.map((message: any, index: number) => {
+        Object.values(messages).map((message: any, index: number) => {
+          const isHumanOrigin = message.originator === "HUMAN";
           return (
             <BuildBub
               message={message}
-              sender={message.source == "user" ? "HUMAN" : "AI"}
-              senderColor={message.source == "user" ? "#78C1DD" : "#F69292"}
+              sender={
+                message.senderLabelDisplay || (isHumanOrigin ? "HUMAN" : "AI")
+              }
+              senderColor={isHumanOrigin ? "#78C1DD" : "#F69292"}
               content={message.body}
-              isFromUser={message.source == "user"}
               index={index}
               key={index}
             />

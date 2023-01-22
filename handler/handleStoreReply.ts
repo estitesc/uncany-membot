@@ -1,5 +1,5 @@
 import { sendMessage } from "../lib/twilio";
-import { createThreadReplyAndEmbed } from "../model/threadReplyData";
+import { createReplyMessage } from "../model/threadMessageData";
 import { getUserData } from "../model/userData";
 
 export const handleStoreReply = async (
@@ -8,14 +8,8 @@ export const handleStoreReply = async (
   body: string,
   threadData: any
 ) => {
-  console.log("entering handle store reply", body);
-
-  const result = await createThreadReplyAndEmbed(
-    uid,
-    threadRef,
-    threadData.id,
-    body
-  );
+  const result = await createReplyMessage(uid, threadData.id, body);
+  console.log("result", result);
 
   const userData: any = await getUserData(uid);
   if (threadData?.type === "text" && userData?.phone) {
