@@ -1,14 +1,6 @@
 import advanceConvo from "../../driver/convoManager";
-import {
-  createThread,
-  getThreadData,
-  getThreadRef,
-  setThreadDataFromRef,
-} from "../../model/threadData";
-import {
-  createMessageAndEmbed,
-  createThreadMessage,
-} from "../../model/threadMessageData";
+import { createThread } from "../../model/threadData";
+import { createMessageAndEmbed } from "../../model/threadMessageData";
 import {
   createUser,
   getUserByPhone,
@@ -16,7 +8,6 @@ import {
   setPhone,
   setUserData,
 } from "../../model/userData";
-import { getSubthreadId } from "../../util/subthreadHelper";
 
 const recTwilio = async (req: any, res: any) => {
   console.log("Message Received, body is", req.body);
@@ -56,10 +47,7 @@ const recTwilio = async (req: any, res: any) => {
         await setUserData(uid, { twilioThreadId: threadId });
       }
 
-      // await createThreadMessage(uid, threadId, req.body.Body);
-      const threadData: any = await getThreadData(uid, threadId);
-      const subthreadId = getSubthreadId(threadData, req.body.Body);
-      await createMessageAndEmbed(uid, threadId, req.body.Body, subthreadId);
+      await createMessageAndEmbed(uid, threadId, req.body.Body);
 
       await advanceConvo(uid, "text", threadId);
 

@@ -38,7 +38,10 @@ export const createNamedThread = async (
   userId: string,
   type: string,
   convoState: string,
-  threadId?: string
+  threadId?: string,
+  humanSenderName?: string,
+  aiSenderName?: string,
+  isCanon?: boolean
 ) => {
   const silly = generateMiniSilly();
   const newThreadId = threadId || silly;
@@ -51,6 +54,9 @@ export const createNamedThread = async (
     await setDoc(threadRef, {
       type,
       convoState,
+      humanSenderName,
+      aiSenderName,
+      isCanon,
       createdAt: new Date(),
     });
     console.log("Thread written with ID: ", newThreadId);

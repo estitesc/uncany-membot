@@ -2,27 +2,24 @@ import React from "react";
 import _ from "lodash";
 import type { NextPage } from "next";
 import {
-  createMessageAndEmbed,
   createMessageFromTrainer,
+  listenThreadMessages,
 } from "../model/threadMessageData";
 import HeadWithFonts from "../c/HeadWithFonts";
 import MessageInput from "../c/MessageInput";
 import { createUser, userExists } from "../model/userData";
 import MarkBarSimple from "../c/MarkBarSimple";
 import FunctionBar from "../c/FunctionBar";
+import SideBar from "../c/trainer/SideBar";
 import BuildContext from "../contexts/BuildContext";
 import SessionUserContext from "../contexts/SessionUserContext";
-import SimpleSideBar from "../c/SimpleSideBar";
 import DialogPanel from "../c/DialogPanel";
-import useIsDesktop from "../h/useIsDesktop";
-import PleaseDesktop from "../c/PleaseDesktop";
-import { apiPath } from "../lib/embedApiCaller";
 
-const Dialog: NextPage = () => {
+const Train: NextPage = () => {
+  const [messages, setMessages] = React.useState([""]);
+
   const { userId, setUserId } = React.useContext(SessionUserContext);
   const { threadId, setSelMessages } = React.useContext(BuildContext);
-
-  const isDesktop = useIsDesktop();
 
   React.useEffect(() => {
     setSelMessages([]);
@@ -32,14 +29,14 @@ const Dialog: NextPage = () => {
     const newUserId = await createUser();
     // We need to store the user data in localStorage
     if (newUserId) {
-      localStorage.setItem("membotUserId", newUserId);
+      localStorage.setItem("userId", newUserId);
       setUserId(newUserId);
       console.log("new created", newUserId);
     }
   }, []);
 
   const loadUserId = React.useCallback(async () => {
-    const storedUserId = localStorage.getItem("membotUserId");
+    const storedUserId = localStorage.getItem("userId");
     console.log("got stored User Id ", storedUserId);
 
     if (!storedUserId) {
@@ -51,7 +48,7 @@ const Dialog: NextPage = () => {
     const userDoesExist = await userExists(storedUserId);
 
     if (userDoesExist) {
-      console.log("found existing, setting id", storedUserId);
+      console.log("found existing, setting id");
       setUserId(storedUserId);
     } else {
       console.log("no corresponding db entry, creating new");
@@ -59,18 +56,42 @@ const Dialog: NextPage = () => {
     }
   }, [createNewUser]);
 
+  // const loadUserFromLocal = useLoadUserFromLocal(userId);
+  // This needs to be in a useEffect or it will fire too early, but it should only be called once.
   React.useEffect(() => {
     loadUserId();
   }, [loadUserId]);
+
+  const scrollEndRef = React.useRef(undefined as any);
+
+  const scrollToBottom = () => {
+    if (scrollEndRef.current) {
+      scrollEndRef.current.scrollIntoView(false);
+    }
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  React.useEffect(() => {
+    if (!threadId || !userId) {
+      return;
+    }
+    console.log("setting up por listen", userId, threadId);
+    const unsub = listenThreadMessages(userId, threadId, (messages: any) => {
+      setMessages(messages);
+    });
+    return unsub;
+  }, [threadId, userId]);
 
   const sendMessage = async (message: string) => {
     if (!message.length) {
       return;
     }
-    // await createMessageAndEmbed(userId, threadId, message);
     await createMessageFromTrainer(userId, threadId, message);
 
-    const response = await fetch(`${apiPath}/readAndReplyThread`, {
+    const response = await fetch("/api/readAndReplyThread", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,12 +99,8 @@ const Dialog: NextPage = () => {
       body: JSON.stringify({ uid: userId, threadId }),
     });
     const data = await response.json();
-    console.log("response from api", data);
+    return data;
   };
-
-  if (!isDesktop) {
-    return <PleaseDesktop />;
-  }
 
   return (
     <div>
@@ -96,7 +113,6 @@ const Dialog: NextPage = () => {
           position: "relative",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden",
         }}
       >
         <MarkBarSimple />
@@ -108,7 +124,7 @@ const Dialog: NextPage = () => {
             width: "100%",
           }}
         >
-          <SimpleSideBar />
+          <SideBar />
           <div
             style={{
               height: "100%",
@@ -127,4 +143,4 @@ const Dialog: NextPage = () => {
   );
 };
 
-export default Dialog;
+export default Train;

@@ -1,5 +1,6 @@
 import * as React from "react";
 import BuildThreadSelect from "./BuildThreadSelect";
+import DialogResetThreadButton from "./DialogResetThreadButton";
 import ResetThreadButton from "./ResetThreadButton";
 
 const FunctionBar: React.FC = () => {
@@ -16,8 +17,13 @@ const FunctionBar: React.FC = () => {
         justifyContent: "space-between",
       }}
     >
-      <div style={{ marginLeft: 20 }}>
-        <ResetThreadButton />
+      <div style={{ display: "flex" }}>
+        <div style={{ marginLeft: 20 }}>
+          <ResetThreadButton />
+        </div>
+        <div style={{ marginLeft: 20 }}>
+          <DialogResetThreadButton />
+        </div>
       </div>
       <div style={{ marginRight: 24 }}>
         <BuildThreadSelect />

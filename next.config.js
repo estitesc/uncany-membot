@@ -2,20 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/dialog",
-        permanent: true,
-      },
-    ];
-  },
-  // async rewrites() {
+  // async redirects() {
   //   return [
   //     {
-  //       source: "/api/:path*",
-  //       destination: "https://api.tht.ooo/:path*",
+  //       source: "/",
+  //       destination: "/dialog",
+  //       permanent: true,
   //     },
   //   ];
   // },

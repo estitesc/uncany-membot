@@ -8,7 +8,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage }) => {
   const [message, setMessage] = React.useState("");
 
   const sendAndClear = () => {
-    console.log("is this even happening");
     setMessage("");
     sendMessage(message);
   };

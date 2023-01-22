@@ -1,25 +1,18 @@
 import { getCompletionFromParams } from "../lib/openAI";
 import { getRelevantDialogBlocks } from "../lib/memory";
-import { combineNLinesToDialog } from "../util/dialogHelper";
+import { mapMessagesToDialog } from "../util/dialogHelper";
 
 const runNode = async (
   node: any,
   messages: any,
-  replies: any,
   uid: string,
   threadRef: any,
   threadData: any
 ) => {
   const numLines = node.dialogConfig?.numLines || 10;
-  const dialog = combineNLinesToDialog(
-    messages,
-    replies,
-    numLines,
-    {
-      ...node.dialogConfig,
-    },
-    threadData
-  );
+  const dialog = mapMessagesToDialog(messages, numLines, {
+    ...node.dialogConfig,
+  });
 
   let selDialogBlocks = [] as string[];
   if (node?.dataConfig?.getPersonalDialogMatches) {

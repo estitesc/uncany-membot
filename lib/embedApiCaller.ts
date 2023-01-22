@@ -7,6 +7,8 @@ export const callEmbedApi = async (
   userId: string,
   threadId: string,
   messageId: string,
+  programId: string,
+  canonOrMemory: string,
   body: string,
   senderType: string
 ) => {
@@ -19,6 +21,8 @@ export const callEmbedApi = async (
       uid: userId,
       threadId,
       messageId,
+      programId,
+      canonOrMemory,
       body,
       senderType,
     }),

@@ -1,30 +1,15 @@
 import { sendMessage } from "../lib/twilio";
-import { createThreadReplyAndEmbed } from "../model/threadReplyData";
+import { createReplyMessage } from "../model/threadMessageData";
 import { getUserData } from "../model/userData";
 
 export const handleStoreReply = async (
   uid: string,
   threadRef: any,
   body: string,
-  threadData: any,
-  subthreadId?: string
+  threadData: any
 ) => {
-  console.log("entering handle store reply", body);
-  const interviewOrChallengeSubthreadId =
-    threadData?.interviewOrChallenge == "CHALLENGE" ? "CHALLENGE" : "INTERVIEW";
-  const subthreadIdToUse = subthreadId
-    ? subthreadId
-    : interviewOrChallengeSubthreadId;
-
-  console.log("subthreadIdToUse is", subthreadIdToUse);
-
-  const result = await createThreadReplyAndEmbed(
-    uid,
-    threadRef,
-    threadData.id,
-    body,
-    subthreadIdToUse
-  );
+  const result = await createReplyMessage(uid, threadData.id, body);
+  console.log("result", result);
 
   const userData: any = await getUserData(uid);
   if (threadData?.type === "text" && userData?.phone) {

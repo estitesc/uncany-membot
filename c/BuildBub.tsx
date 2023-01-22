@@ -7,7 +7,6 @@ interface BuildBubProps {
   content: string;
   sender: string;
   senderColor: string;
-  isFromUser?: boolean;
   index: number;
 }
 
@@ -16,7 +15,6 @@ const BuildBub: React.FC<BuildBubProps> = ({
   content,
   sender,
   senderColor,
-  isFromUser,
   index,
 }) => {
   return (
@@ -26,7 +24,6 @@ const BuildBub: React.FC<BuildBubProps> = ({
         content={content}
         sender={sender}
         senderColor={senderColor}
-        isFromUser={isFromUser}
       />
     </div>
   );

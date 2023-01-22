@@ -4,14 +4,12 @@ interface TermLineBubProps {
   content: string;
   sender: string;
   senderColor: string;
-  isFromUser?: boolean;
 }
 
 const TermLineBub: React.FC<TermLineBubProps> = ({
   content,
   sender,
   senderColor,
-  isFromUser,
 }) => {
   return (
     <div

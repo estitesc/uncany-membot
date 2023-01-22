@@ -11,7 +11,11 @@ import {
 import { callEmbedApi } from "../lib/embedApiCaller";
 import { database } from "../lib/firebase";
 import { unwindSnapshot } from "../util/modelHelper";
-import { getThreadDataFromRef, setThreadDataFromRef } from "./threadData";
+import {
+  getThreadData,
+  getThreadDataFromRef,
+  setThreadDataFromRef,
+} from "./threadData";
 
 export const getIncMessageIdAndIncrement = async (threadRef: any) => {
   const threadData: any = await getThreadDataFromRef(threadRef);
@@ -28,8 +32,13 @@ export const getIncMessageIdAndIncrement = async (threadRef: any) => {
 export const createMessageAndEmbed = async (
   userId: string,
   threadId: string,
-  body: string,
-  subthreadId: string
+  originator: string,
+  interfaceOrigin: string,
+  llmConfig: any,
+  senderLabelPrompt: string,
+  senderLabelDisplay: string,
+  isCanon: boolean,
+  body: string
 ) => {
   const userRef = doc(database, "users", userId);
   const threadCollRef = collection(userRef, "threads");
@@ -39,22 +48,81 @@ export const createMessageAndEmbed = async (
 
   const messageRef = doc(threadRef, "messages", newMessageId);
 
-  console.log("subthread ID here", subthreadId);
   try {
     await setDoc(messageRef, {
       body,
       createdAt: new Date(),
-      subthreadId,
     });
     console.log("Document written with ID: ", newMessageId);
 
     // Then also get the embedding and update the message with it and write the global
-    await callEmbedApi(userId, threadId, newMessageId, body, "user");
+    const threadData: any = await getThreadData(userId, threadId);
+    const source = threadData.convoState === "SIM_HUMAN" ? "ai" : "user";
+    const programId = "sam_2";
+    const canonOrMemory =
+      threadData.convoState === "SIM_HUMAN" ? "canon" : "memory";
+    await callEmbedApi(
+      userId,
+      threadId,
+      newMessageId,
+      programId,
+      canonOrMemory,
+      body,
+      interfaceOrigin
+    );
 
     return newMessageId;
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+};
+
+export const createMessageFromTrainer = async (
+  userId: string,
+  threadId: string,
+  body: string
+) => {
+  const threadData: any = await getThreadData(userId, threadId);
+  const senderLabelPrompt =
+    threadData.convoState === "SIM_HUMAN" ? "AI" : "HUMAN";
+  const senderLabelDisplay = threadData.humanSenderName || "HUMAN";
+  const isCanon = threadData.isCanon || false;
+
+  await createMessageAndEmbed(
+    userId,
+    threadId,
+    "HUMAN",
+    "train",
+    {},
+    senderLabelPrompt,
+    senderLabelDisplay,
+    isCanon,
+    body
+  );
+};
+
+export const createReplyMessage = async (
+  userId: string,
+  threadId: string,
+  body: string
+) => {
+  const threadData: any = await getThreadData(userId, threadId);
+  const senderLabelPrompt =
+    threadData.convoState === "SIM_HUMAN" ? "HUMAN" : "AI";
+  const senderLabelDisplay = threadData.aiSenderName || "AI";
+  const isCanon = threadData.isCanon || false;
+
+  await createMessageAndEmbed(
+    userId,
+    threadId,
+    "AI",
+    "advanceDialog",
+    {},
+    senderLabelPrompt,
+    senderLabelDisplay,
+    isCanon,
+    body
+  );
 };
 
 export const setMessageDataFromThreadRef = async (
