@@ -51,6 +51,10 @@ export const createMessageAndEmbed = async (
   try {
     await setDoc(messageRef, {
       body,
+      originator,
+      interfaceOrigin,
+      senderLabelPrompt,
+      senderLabelDisplay,
       createdAt: new Date(),
     });
     console.log("Document written with ID: ", newMessageId);
