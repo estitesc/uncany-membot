@@ -6,10 +6,11 @@ import HumanInstructionInput from "./HumanInstructionInput";
 const SideBarThreadPanel: React.FC = () => {
   return (
     <>
-      <div style={{ margin: 24 }}>simulated human instructions</div>
+      <div style={{ color: "#F6F7F9", marginBottom: 8 }}>
+        SIMULATOR INSTRUCTIONS
+      </div>
       <HumanInstructionInput />
-      <div style={{ margin: 24 }}>{/* <BakeButton /> */}</div>
-      <div style={{ margin: "0 24px" }}>
+      <div style={{ marginTop: 24 }}>
         <DeleteSelButton />
       </div>
       <div style={{ margin: "24px 24px 0" }}>

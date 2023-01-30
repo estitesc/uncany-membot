@@ -5,16 +5,14 @@ const MarkBarSimple: React.FC = () => {
   return (
     <div
       style={{
-        height: 44,
-        width: "100%",
         display: "flex",
-        backgroundColor: "#F9F7F5",
-        paddingTop: 16,
-        alignItems: "baseline",
-        justifyContent: "space-between",
+        backgroundColor: "#23232F",
+        padding: 12,
       }}
     >
-      <WordMark />
+      <div style={{ paddingLeft: 12 }}>
+        <WordMark />
+      </div>
     </div>
   );
 };

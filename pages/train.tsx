@@ -110,7 +110,6 @@ const Train: NextPage = () => {
           height: "100vh",
           width: "100vw",
           backgroundColor: "#fbfbf8",
-          position: "relative",
           display: "flex",
           flexDirection: "column",
         }}
@@ -120,8 +119,8 @@ const Train: NextPage = () => {
           style={{
             display: "flex",
             flexDirection: "row",
-            height: "100%",
             width: "100%",
+            flex: 1,
           }}
         >
           <SideBar />
@@ -130,6 +129,7 @@ const Train: NextPage = () => {
               height: "100%",
               width: "100%",
               display: "flex",
+              flex: 1,
               flexDirection: "column",
             }}
           >

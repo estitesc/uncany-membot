@@ -10,11 +10,12 @@ const SideBar: React.FC = () => {
   return (
     <div
       style={{
-        height: "100%",
         maxWidth: 500,
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#E7DFDA",
+        backgroundColor: "#1A1A23",
+        padding: 24,
+        borderRight: "1px solid #23232F",
       }}
     >
       <SideBarTopButtons />
@@ -22,6 +23,7 @@ const SideBar: React.FC = () => {
         style={{
           display: sideBarMode === "THREAD" ? "flex" : "none",
           flexDirection: "column",
+          marginTop: 24,
         }}
       >
         <SideBarThreadPanel />
@@ -30,6 +32,7 @@ const SideBar: React.FC = () => {
         style={{
           display: sideBarMode === "BROWSE" ? "flex" : "none",
           flexDirection: "column",
+          marginTop: 24,
         }}
       >
         <SideBarBrowsePanel />

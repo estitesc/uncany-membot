@@ -2,6 +2,7 @@ import * as React from "react";
 import BuildContext from "../../contexts/BuildContext";
 import SessionUserContext from "../../contexts/SessionUserContext";
 import { getThreadRef, setThreadDataFromRef } from "../../model/threadData";
+import SmallButton from "../SmallButton";
 
 const HumanInstructionInput: React.FC = () => {
   const [instructions, setInstructions] = React.useState("");
@@ -34,7 +35,7 @@ const HumanInstructionInput: React.FC = () => {
   };
 
   return (
-    <div style={{ margin: "0 24px" }}>
+    <div>
       <div>
         <textarea
           style={{
@@ -43,47 +44,19 @@ const HumanInstructionInput: React.FC = () => {
             fontSize: 16,
             fontFamily: "Inter",
             backgroundColor: "#E7DFDA",
+            resize: "none",
+            borderRadius: 8,
           }}
           value={instructions}
           onKeyDown={handleKeydown}
           onChange={(e: any) => setInstructions(e.target.value)}
         />
       </div>
-      <div style={{ display: "flex" }}>
-        <button
-          onClick={applyUpdate}
-          style={{
-            backgroundColor: "#4BA3D2",
-            fontFamily: "Inter",
-            fontSize: 18,
-            marginLeft: 10,
-            padding: 12,
-            paddingRight: 18,
-            paddingLeft: 18,
-            borderRadius: 8,
-            color: "#F9F7F5",
-            borderWidth: 0,
-          }}
-        >
-          apply
-        </button>
-        <button
-          onClick={speak}
-          style={{
-            backgroundColor: "#4BA3D2",
-            fontFamily: "Inter",
-            fontSize: 18,
-            marginLeft: 10,
-            padding: 12,
-            paddingRight: 18,
-            paddingLeft: 18,
-            borderRadius: 8,
-            color: "#F9F7F5",
-            borderWidth: 0,
-          }}
-        >
-          speak
-        </button>
+      <div style={{ display: "flex", marginTop: 8 }}>
+        <SmallButton onClick={applyUpdate} label="apply" />
+        <div style={{ paddingLeft: 8 }}>
+          <SmallButton onClick={speak} label="speak" />
+        </div>
       </div>
     </div>
   );

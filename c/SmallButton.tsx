@@ -11,13 +11,14 @@ const SmallButton: React.FC<SmallButtonProps> = ({ onClick, label }) => {
       onClick={onClick}
       style={{
         borderStyle: "none",
-        backgroundColor: "#000",
+        backgroundColor: "#0B0B14",
         fontFamily: "Inconsolata",
         fontSize: 14,
         color: "#fff",
         padding: "10px 16px",
         borderRadius: 6,
         cursor: "pointer",
+        border: "1px solid #fff",
       }}
     >
       {label}

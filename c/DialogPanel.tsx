@@ -33,11 +33,11 @@ const DialogPanel: React.FC = () => {
   return (
     <div
       style={{
-        backgroundColor: "#2B1D12",
+        backgroundColor: "#14141A",
         flex: 1,
-        maxHeight: `calc(100vh - 188px)`,
+        flexBasis: 0,
         overflow: "scroll",
-        width: "100%",
+        paddingLeft: 24,
       }}
     >
       {threadId ? (
