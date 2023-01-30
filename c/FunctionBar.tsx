@@ -7,25 +7,24 @@ const FunctionBar: React.FC = () => {
   return (
     <div
       style={{
-        height: 44,
-        width: "100%",
         display: "flex",
         flexDirection: "row",
-        backgroundColor: "#CBE6F6",
-        paddingTop: 16,
-        alignItems: "baseline",
+        backgroundColor: "#1A1A23",
+        // backgroundColor: "#939333",
+        padding: 12,
+        alignItems: "center",
         justifyContent: "space-between",
       }}
     >
       <div style={{ display: "flex" }}>
-        <div style={{ marginLeft: 20 }}>
+        <div style={{ marginLeft: 12 }}>
           <ResetThreadButton />
         </div>
-        <div style={{ marginLeft: 20 }}>
+        <div style={{ marginLeft: 24 }}>
           <DialogResetThreadButton />
         </div>
       </div>
-      <div style={{ marginRight: 24 }}>
+      <div style={{ marginRight: 12 }}>
         <BuildThreadSelect />
       </div>
     </div>

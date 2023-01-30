@@ -33,12 +33,12 @@ const SelectorButton: React.FC<SelectorButtonProps> = ({
       onClick={handleClick}
       style={{
         borderStyle: "none",
-        backgroundColor: selMsgIds.includes(message.id) ? "#ffaa33" : "#aa5599",
-        margin: "10px 0px 10px 10px",
-        borderRadius: 2,
+        backgroundColor: selMsgIds.includes(message.id) ? "#50E28F" : "#1A1A23",
+        borderRadius: 8,
         cursor: "pointer",
-        height: 18,
-        width: 18,
+        height: 16,
+        width: 16,
+        border: "1px solid #fff",
       }}
     />
   );

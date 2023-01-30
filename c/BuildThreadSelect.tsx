@@ -1,7 +1,7 @@
 import * as React from "react";
 import BuildContext from "../contexts/BuildContext";
 import SessionUserContext from "../contexts/SessionUserContext";
-import { getThreadsForUser, listenUserThreads } from "../model/threadData";
+import { listenUserThreads } from "../model/threadData";
 
 const BuildThreadSelect: React.FC = () => {
   const [threadIds, setThreadIds] = React.useState([""]);
@@ -29,9 +29,17 @@ const BuildThreadSelect: React.FC = () => {
   );
 
   return (
-    <div style={{ fontFamily: "Inconsolata", fontSize: 16 }}>
-      my threads:
-      <select onChange={onSelect}>
+    <div style={{ fontFamily: "Inconsolata", fontSize: 16, color: "#F6F7F9" }}>
+      thread:
+      <select
+        onChange={onSelect}
+        style={{
+          fontFamily: "Inconsolata",
+          paddingLeft: 4,
+          borderRadius: 4,
+          marginLeft: 4,
+        }}
+      >
         <option key="none selected" selected={!threadId}>
           none
         </option>

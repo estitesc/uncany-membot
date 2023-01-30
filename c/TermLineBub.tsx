@@ -15,9 +15,7 @@ const TermLineBub: React.FC<TermLineBubProps> = ({
     <div
       style={{
         padding: 12,
-        marginLeft: 12,
         marginRight: 12,
-        borderRadius: 12,
         fontFamily: "Inconsolata",
         fontSize: 14,
       }}
@@ -25,7 +23,7 @@ const TermLineBub: React.FC<TermLineBubProps> = ({
       <span
         style={{ color: senderColor, fontWeight: "bold" }}
       >{`${sender} > `}</span>
-      <span style={{ color: "#fbfbf8" }}>{content}</span>
+      <span style={{ color: "#F6F7F9" }}>{content}</span>
     </div>
   );
 };
